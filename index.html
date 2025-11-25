@@ -1,1 +1,77 @@
-PASTE YOUR HTML HERE LITERALLY (I WILL INSERT IT NEXT MESSAGE)
+cat > index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>∞ Infinity Color Feed</title>
+<style>
+    body { background:#000; color:#fff; font-family:Arial; margin:0; padding:0; }
+    .topbar { padding:20px; background:#111; text-align:center; }
+    .btn {
+        padding:12px 18px;
+        margin:6px;
+        border-radius:5px;
+        cursor:pointer;
+        font-size:16px;
+        border:none;
+        color:#fff;
+    }
+    .yellow { background:#d4ba00; }
+    .purple { background:#7e3bd8; }
+    .blue   { background:#1e90ff; }
+    .red    { background:#cc0000; }
+    .orange { background:#ff7f00; }
+    .green  { background:#0f0; color:#000; }
+    .white  { background:#fff; color:#000; }
+    #feedBox { padding:20px; }
+    .entry {
+        padding:10px;
+        margin:10px 0;
+        border-radius:4px;
+        border-left:6px solid;
+        background:#111;
+    }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <button class="btn yellow" onclick="switchFeed('yellow')">YELLOW</button>
+    <button class="btn purple" onclick="switchFeed('purple')">PURPLE</button>
+    <button class="btn blue"   onclick="switchFeed('blue')">BLUE</button>
+    <button class="btn red"    onclick="switchFeed('red')">RED</button>
+    <button class="btn orange" onclick="switchFeed('orange')">ORANGE</button>
+    <button class="btn green"  onclick="switchFeed('green')">GREEN</button>
+    <button class="btn white"  onclick="switchFeed('white')">WHITE</button>
+</div>
+
+<div id="feedBox">
+    <h2>Select a color channel above</h2>
+</div>
+
+<script>
+function switchFeed(color) {
+
+    fetch(`feed/${color}/index.json`)
+        .then(r => r.json())
+        .then(list => {
+            let html = "";
+            list.forEach(entry => {
+                html += `
+                <div class="entry" style="border-color:${color}">
+                    <strong>${entry.timestamp}</strong><br>
+                    ${entry.message}
+                </div>`;
+            });
+            document.getElementById('feedBox').innerHTML = html;
+        })
+        .catch(() => {
+            document.getElementById('feedBox').innerHTML =
+                "<p>No data yet for this channel.</p>";
+        });
+}
+</script>
+
+</body>
+</html>
+EOF
