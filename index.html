@@ -1,77 +1,72 @@
-cat > index.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8" />
 <title>∞ Infinity Color Feed</title>
 <style>
-    body { background:#000; color:#fff; font-family:Arial; margin:0; padding:0; }
-    .topbar { padding:20px; background:#111; text-align:center; }
-    .btn {
-        padding:12px 18px;
-        margin:6px;
-        border-radius:5px;
-        cursor:pointer;
-        font-size:16px;
+    body { background:#000; color:#fff; font-family:Arial; margin:0; }
+    .top { padding:15px; background:#111; text-align:center; }
+    button {
+        padding:10px 15px;
+        margin:4px;
         border:none;
+        border-radius:6px;
         color:#fff;
+        cursor:pointer;
     }
     .yellow { background:#d4ba00; }
     .purple { background:#7e3bd8; }
     .blue   { background:#1e90ff; }
     .red    { background:#cc0000; }
     .orange { background:#ff7f00; }
-    .green  { background:#0f0; color:#000; }
+    .green  { background:#00ff00; color:#000; }
     .white  { background:#fff; color:#000; }
-    #feedBox { padding:20px; }
+    #feed { padding:20px; }
     .entry {
-        padding:10px;
+        padding:12px;
         margin:10px 0;
-        border-radius:4px;
-        border-left:6px solid;
         background:#111;
+        border-left:6px solid;
+        border-radius:6px;
     }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-    <button class="btn yellow" onclick="switchFeed('yellow')">YELLOW</button>
-    <button class="btn purple" onclick="switchFeed('purple')">PURPLE</button>
-    <button class="btn blue"   onclick="switchFeed('blue')">BLUE</button>
-    <button class="btn red"    onclick="switchFeed('red')">RED</button>
-    <button class="btn orange" onclick="switchFeed('orange')">ORANGE</button>
-    <button class="btn green"  onclick="switchFeed('green')">GREEN</button>
-    <button class="btn white"  onclick="switchFeed('white')">WHITE</button>
+<div class="top">
+    <button class="yellow" onclick="loadFeed('yellow')">YELLOW</button>
+    <button class="purple" onclick="loadFeed('purple')">PURPLE</button>
+    <button class="blue"   onclick="loadFeed('blue')">BLUE</button>
+    <button class="red"    onclick="loadFeed('red')">RED</button>
+    <button class="orange" onclick="loadFeed('orange')">ORANGE</button>
+    <button class="green"  onclick="loadFeed('green')">GREEN</button>
+    <button class="white"  onclick="loadFeed('white')">WHITE</button>
 </div>
 
-<div id="feedBox">
-    <h2>Select a color channel above</h2>
-</div>
+<div id="feed"><h2>Select a color channel</h2></div>
 
 <script>
-function switchFeed(color) {
-
-    fetch(`feed/${color}/index.json`)
+function loadFeed(color) {
+    fetch(`feed/${color}.json`)
         .then(r => r.json())
-        .then(list => {
+        .then(data => {
             let html = "";
-            list.forEach(entry => {
+            data.forEach(item => {
                 html += `
-                <div class="entry" style="border-color:${color}">
-                    <strong>${entry.timestamp}</strong><br>
-                    ${entry.message}
-                </div>`;
+                    <div class="entry" style="border-color:${color}">
+                        <strong>${item.timestamp}</strong><br>
+                        ${item.message}
+                    </div>
+                `;
             });
-            document.getElementById('feedBox').innerHTML = html;
+            document.getElementById("feed").innerHTML = html;
         })
         .catch(() => {
-            document.getElementById('feedBox').innerHTML =
-                "<p>No data yet for this channel.</p>";
+            document.getElementById("feed").innerHTML =
+                "<p>No data available for this channel yet.</p>";
         });
 }
 </script>
 
 </body>
 </html>
-EOF
